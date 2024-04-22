@@ -15,8 +15,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Configuration //Indica que é uma classe de configuração.
-@EnableWebSecurity // Faz com que tudo nesta classe habilite a configuração do WebSecurity.
+@Configuration
+@EnableWebSecurity
 public class SecurityConfiguration {
 
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -28,35 +28,30 @@ public class SecurityConfiguration {
     @Autowired
     SecurityFilter securityFilter;
 
-    /*configura uma aplicação Spring Security para desabilitar proteção CSRF,
-    tratar sessões como stateless, e requerer que apenas usuários com a função "ADMIN"
-    possam realizar requisições POST para "/products", enquanto todas as outras requisições
-    exigem autenticação.*/
-
     @Bean
-    //Faz validações/filtragens para tornar a aplicação segura.
-    //Verifica se o User esta apto a fazer uma requisição.
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint)) // Adiciona o AuthenticationEntryPoint personalizado
+                .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(authorize -> authorize
-                                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll() //Permite que todos os usuários façam um post nesta url de login.
-                                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll() //Permite que todos os usuários façam um post nesta url de registro.
+                                .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/categories").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/order").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/products").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/products/{id}").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/by-category/{categoryId}").permitAll()
                 .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();//.build serve para construir um objeto.
-
-        // STATELESS --> Estado utilizado para remover tokens do tipo csrf e permitir definir tokens da biblioteca JWT para os usuários.
+                .build();
 
     }
 
-    @Bean  //Faz a injeção de dependência, para poder ser usado por toda a plicação.
+
+    @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
@@ -64,6 +59,6 @@ public class SecurityConfiguration {
     //Método para criptografar a senha.
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); //Classe do SpringSecurity para fazer criptografia das senhas.
+        return new BCryptPasswordEncoder();
     }
 }

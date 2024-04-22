@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.*;
 
 
-//Informa o spring que é uma classe de serviço.
+
 @Service
 public class TokenService {
 
@@ -21,9 +21,7 @@ public class TokenService {
     //Método para gerar token.
     public String generateToken(UserModel userModel){
         try{
-            Algorithm algorithm = Algorithm.HMAC256(secret); //Algoritmo para gerar token advindo da dependência do JWT.
-                                                            // O parâmetro é uma SECRET, que tem o objetivo de tornar o sistema mais seguro,
-                                                            // pois garante que os tokens só possam ser verificados e validados com a posse dessa chave secreta.
+            Algorithm algorithm = Algorithm.HMAC256(secret);
 
             String token = JWT.create()
                     .withIssuer("auth-server-api")
@@ -33,10 +31,6 @@ public class TokenService {
 
             return token;
 
-            //withIssuer --> quem criou;
-            //withSubject -- User que está recebendo este token.
-            //withExpiresAt --> tempo de expiração.
-            //sign --> "assinar o processo de geração e referência do token.
         }catch (JWTCreationException exception){
             throw new RuntimeException("Error while generating token", exception);
         }
@@ -60,13 +54,9 @@ public class TokenService {
 
     //Método para gerar um tempo de expiração do código.
     public Instant generateExpirationDate() {
-        // Define o fuso horário
+
         ZoneId zoneId = ZoneId.of("America/Sao_Paulo");
-
-        // Calcula a data/hora de expiração
         ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId).plusMonths(4);
-
-        // Converte para Instant
         return zonedDateTime.toInstant();
     }
 

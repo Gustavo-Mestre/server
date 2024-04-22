@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
-@RestController //Tem que ser usado para fazer a injeção dos beans.
+@RestController
 public class UserController {
 
     @Autowired

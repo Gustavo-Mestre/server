@@ -1,7 +1,6 @@
 package br.edu.utfpr.pb.tads.server.controller;
 
 import br.edu.utfpr.pb.tads.server.model.CategoryModel;
-import br.edu.utfpr.pb.tads.server.model.UserModel;
 import br.edu.utfpr.pb.tads.server.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +29,4 @@ public class CategoryController {
         if (category.isEmpty()) return ResponseEntity.status((HttpStatus.NOT_FOUND)).body("User not found.");
         return ResponseEntity.status(HttpStatus.OK).body(category.get());
     }
-
-
 }

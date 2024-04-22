@@ -1,7 +1,10 @@
 package br.edu.utfpr.pb.tads.server.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -13,32 +16,15 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-
 public class OrderModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-
-    @NotNull
     private LocalDateTime date;
 
-
     @ManyToOne
-    @JoinColumn(name = "USER_ID", referencedColumnName = "id")
-    private UserModel userModel;
-
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        ProductModel product = (Product) o;
-//        return Objects.equals(id, product.id);
-//    }
-
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id);
-//    }
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private UserModel user;
 }
